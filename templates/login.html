@@ -1,0 +1,236 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %} 
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login | T-Tech</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/floating-labels/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'assets2/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'logo_animation.css' %}" rel="stylesheet">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        //background-color: MintCream;
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+      }
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .form-signin {
+        width: 100%;
+        max-width: 420px;
+        padding: 15px;
+        margin: auto;
+      }
+
+      .form-label-group {
+        position: relative;
+        margin-bottom: 1rem;
+      }
+
+      .form-label-group input,
+      .form-label-group label {
+        height: 3.125rem;
+        padding: .75rem;
+        //font-weight: bold;
+      }
+
+      .form-label-group label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        margin-bottom: 0; /* Override default `<label>` margin */
+        line-height: 1.5;
+        color: #495057;
+        pointer-events: none;
+        cursor: text; /* Match the input under the label */
+        border: 1px solid transparent;
+        border-radius: .25rem;
+        transition: all .1s ease-in-out;
+      }
+
+      .form-label-group input::-webkit-input-placeholder {
+        color: transparent;
+      }
+
+      .form-label-group input::-moz-placeholder {
+        color: transparent;
+      }
+
+      .form-label-group input:-ms-input-placeholder {
+        color: transparent;
+      }
+
+      .form-label-group input::-ms-input-placeholder {
+        color: transparent;
+      }
+
+      .form-label-group input::placeholder {
+        color: transparent;
+      }
+
+      .form-label-group input:not(:-moz-placeholder-shown) {
+        padding-top: 1.25rem;
+        padding-bottom: .25rem;
+      }
+
+      .form-label-group input:not(:-ms-input-placeholder) {
+        padding-top: 1.25rem;
+        padding-bottom: .25rem;
+      }
+
+      .form-label-group input:not(:placeholder-shown) {
+        padding-top: 1.25rem;
+        padding-bottom: .25rem;
+      }
+
+      .form-label-group input:not(:-moz-placeholder-shown) ~ label {
+        padding-top: .25rem;
+        padding-bottom: .25rem;
+        font-size: 12px;
+        font-weight: bold;
+        color: RoyalBlue;
+      }
+
+      .form-label-group input:not(:-ms-input-placeholder) ~ label {
+        padding-top: .25rem;
+        padding-bottom: .25rem;
+        font-size: 12px;
+        font-weight: bold;
+        color: RoyalBlue;
+      }
+
+      .form-label-group input:not(:placeholder-shown) ~ label {
+        padding-top: .25rem;
+        padding-bottom: .25rem;
+        font-size: 12px;
+        font-weight: bold;
+        color: RoyalBlue;
+      }
+
+      /* Fallback for Edge
+      -------------------------------------------------- */
+      @supports (-ms-ime-align: auto) {
+        .form-label-group {
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
+        }
+
+        .form-label-group label {
+          position: static;
+        }
+
+        .form-label-group input::-ms-input-placeholder {
+          color: #777;
+        }
+      }
+
+    </style>
+    <!-- Custom styles for this template -->
+  </head>
+  <body>
+    <form class="form-signin" method="POST" autocomplete="off">
+      {% csrf_token %}
+      <div class="border p-5" style="border-radius: 15px; background-color: mintcream; box-shadow:0px 10px 100px 0px white; ">
+        <div class="text-center mb-4">
+          <img class="mb-0 ologo" src="{% static 'img/ttech_logo.png' %}" alt="" width="50" height="50">
+          <h1 class="h4 mb-3 font-weight-bold">Torres Technology Center Corporation</h1>
+        </div>
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger pl-0 pb-0" style="font-size: .75rem" role="alert">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+        <div class="form-label-group">
+          {{ form.username.errors }}
+          {% render_field form.username class="form-control" placeholder=form.username.label %}
+          <label for="{{ form.username.id_for_label }}">Username</label>
+        </div>
+
+        <div class="form-label-group">
+          {{ form.password.errors }}
+          {% render_field form.password class="form-control" placeholder=form.password.label %}
+          <label for="{{ form.password.id_for_label }}">Password</label>
+        </div>
+        
+        <button class="btn btn-lg btn-outline-primary btn-block" type="submit">Login</button>
+      </div>
+    </form>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+            crossorigin="anonymous"></script>
+    <script>
+      var header = document.querySelector(".ologo");
+      var animationName = ["airplanePropeller", "pulsate",
+                            "lawnMower", "iWanChuBack", "nope",
+                            "heartBeat", "sleepyEyes"]
+      function triggerAnimation() {
+        var animation = animationName[Math.floor(Math.random() * 7)];
+        header.className = "";
+        setTimeout(function() {
+          header.className = animation;
+        }, 10);
+      
+      setTimeout(function() {
+          triggerAnimation()
+        }, 20000);
+      }
+
+      $(function(){
+        triggerAnimation();
+      });
+    </script>
+  </body>
+</html>
