@@ -3,11 +3,11 @@ from .models import *
 
 
 class NewDrForm(forms.ModelForm):
-    customerCHOICES=[('HONDA','HONDA'),
-                     ('IMV','IMV'),
+    customerCHOICES=[('CHRYSLER','CHRYSLER'),
                      ('GM','GM'),
-                     ('OUTLANDER','OUTLANDER'),
-                     ('CHRYSLER','CHRYSLER')]
+                     ('HONDA','HONDA'),
+                     ('IMV','IMV'),
+                     ('OUTLANDER','OUTLANDER')]
 
     statusCHOICES=[('OPEN','OPEN'),
                    ('WAITING','WAITING'),

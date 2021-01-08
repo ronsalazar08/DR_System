@@ -65,7 +65,7 @@
                       <a class="btn btn-warning text-light" href="">
                           <i class="material-icons">edit</i>
                       </a>
-                      <button class="btn btn-danger text-light ml-2 {% if dr.status != 'OPEN' %}disabled{% endif %}" data-toggle="modal" data-target="#drformModal">
+                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger text-light ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal">
                           <i class="material-icons">loop</i>
                       </button>
                       {% if dr.status == 'OPEN' %}
@@ -86,7 +86,7 @@
               {% comment %} <a class="btn btn-info p-2 float-left" href="{% url 'komax_new_dr' %}">
                 <i class="material-icons">note_add</i> &nbsp; New Dr
               </a> {% endcomment %}
-              <button class="btn btn-info p-2 float-left" data-toggle="modal" data-target="#drformModal">
+              <button class="btn btn-info p-2 float-left" data-toggle="modal" data-target="#drformModal" onclick="drFormTransaction('')">
                 <i class="material-icons">note_add</i> &nbsp; New Dr
               </button>
               {% if is_paginated %}
@@ -123,18 +123,18 @@
       </div>
     </div>
 
-    <!-- Rename Modal -->
+    <!-- DR Modal -->
     <div class="modal fade" id="drformModal" tabindex="-1" role="dialog" aria-labelledby="drformModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title h3 font-weight-bold" id="drformModalLabel">New DR</h5>
+            <h5 class="modal-title h3 font-weight-bold" id="drformModalLabel"><span id="drFormTransactionTitle"></span> DR <span id="drRenameControl"></span></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" autocomplete="off" enctype="multipart/form-data">
+            <form method="POST" autocomplete="off" action="{% url 'new_or_rename_dr' %}">
               {% csrf_token %}
               <div class="form-group">
                   <div class="row">
@@ -180,15 +180,30 @@
               </div>
           </div>
           <div class="modal-footer">
-            <input type="hidden" name="form_ctrl" value="new_dr">
+            <input type="hidden" id="form_ctrl" name="form_ctrl" value="">
             <button type="button" class="btn" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" class="btn btn-primary">Create</button>
             </form>
           </div>
         </div>
       </div>
     </div>
 {% endblock content %}
+
+{% block scriptNotReady %}
+
+  function drFormTransaction(control_no) {
+    if (control_no == "" ) {
+      $('#drFormTransactionTitle').text("New");
+      $('#form_ctrl').val('new_dr');
+    } else {
+      $('#drFormTransactionTitle').text("Rename");
+      $('#drRenameControl').html(`(<span class="text-primary">${control_no}</span>)`);
+      $('#form_ctrl').val(control_no);
+    }
+  }
+
+{% endblock scriptNotReady %}
 
 {% block script %}
 
@@ -197,6 +212,7 @@
   });
   $('#id_date_created').datepicker({
                 dateFormat: 'yy-mm-dd'
-                
-            });
+  });
+
+
 {% endblock script %}
