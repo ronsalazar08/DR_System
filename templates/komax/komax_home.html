@@ -62,18 +62,18 @@
                     <td>{{dr.line}}</td>
                     <td>{{dr.status}}</td>
                     <td class="td-actions pt-0 pb-0 pl-0 text-right">
-                      <a class="btn btn-warning text-light" href="">
+                      <a class="btn btn-warning text-light" href="" data-toggle="tooltip" data-placement="top" title="Edit">
                           <i class="material-icons">edit</i>
                       </a>
-                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger text-light ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal">
+                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger text-light ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal" data-toggle="tooltip" data-placement="top" title="Rename">
                           <i class="material-icons">loop</i>
                       </button>
                       {% if dr.status == 'OPEN' %}
-                        <a class="btn btn-rose text-light ml-2" href="{% url 'komax_delete_dr' pk=dr.pk %}">
+                        <a class="btn btn-rose text-light ml-2" href="{% url 'komax_delete_dr' pk=dr.pk %}" data-toggle="tooltip" data-placement="top" title="Delete">
                             <i class="material-icons">close</i>
                         </a>
                       {% else %}
-                        <a class="btn btn-success text-light ml-2" href="">
+                        <a class="btn btn-success text-light ml-2" href="" data-toggle="tooltip" data-placement="top" title="Close">
                             <i class="material-icons">done</i>
                         </a>
                       {% endif %}
