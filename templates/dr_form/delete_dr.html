@@ -3,7 +3,9 @@
 {% block content %}
 
 <div class="row mt-5 pt-5">
-    <div class="col-md-12 mt-5">
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-10 mt-5">
       <div class="card">
         <div class="card-header card-header-danger">
           <h4 class="card-title">Delete Employee</h4>
@@ -18,12 +20,12 @@
             </div>
             <div class="row mt-3">
               <div class="col-md-4">
-                <button type="submit" class="btn btn-success btn-block">Yes</button>
+                <button type="submit" class="btn btn-warning btn-block">Yes</button>
               </div>
               <div class="col-md-4">
               </div>
               <div class="col-md-4">
-                <a class="btn btn-danger btn-block" href="{% url 'komax_home' %}">No</a>
+                <a class="btn btn-danger btn-block" href="{% url 'komax_home' %}?page={{page}}">No</a>
               </div>
             </div>
           </form>
