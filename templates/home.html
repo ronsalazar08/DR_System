@@ -26,7 +26,7 @@
     }
   </style>
 
-<div class="row pb-0 mb-0">
+    <div class="row pb-0 mb-0">
       <div class="col-md-12 pb-0 mb-0">
         <div class="card pb-0 mb-0">
           <div class="card-header card-header-info">
@@ -42,7 +42,7 @@
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover table-striped">
+              <table class="table table-hover">
                 <thead class="text-info">
                   <tr>
                     <th class="pt-0 pb-0">Control No.</th>
@@ -62,23 +62,29 @@
                     <td>{{dr.line}}</td>
                     <td>{{dr.status}}</td>
                     <td class="td-actions pt-0 pb-0 pl-0 text-right">
-                      <a class="btn btn-warning text-light" href="" data-toggle="tooltip" data-placement="top" title="Edit">
+                      {% url 'komax_edit_dr' cnum=dr.control_no as edit_url %} 
+                      <a class="btn btn-warning text-light" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="Edit">
                           <i class="material-icons">edit</i>
                       </a>
-                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger text-light ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal" data-toggle="tooltip" data-placement="top" title="Rename">
+                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal" data-toggle="tooltip" data-placement="top" title="Rename">
                           <i class="material-icons">loop</i>
                       </button>
                       {% if dr.status == 'OPEN' %}
-                        <a class="btn btn-rose text-light ml-2" href="{% url 'komax_delete_dr' pk=dr.pk %}" data-toggle="tooltip" data-placement="top" title="Delete">
+                        {% comment %} <a class="btn btn-rose text-light ml-2" href="{% url 'komax_delete_dr' pk=dr.pk %}" data-toggle="tooltip" data-placement="top" title="Delete">
                             <i class="material-icons">close</i>
-                        </a>
+                        </a> {% endcomment %}
+                        {% url 'komax_delete_dr' cnum=dr.control_no as delete_url %}
+                        <button class="btn btn-rose ml-2" onclick="delete_dr_confirm('{{delete_url}}_{{page_obj.number}}', '{{dr.control_no}}')" data-toggle="tooltip" data-placement="top" title="Delete">
+                            <i class="material-icons">close</i>
+                        </button>
                       {% else %}
-                        <a class="btn btn-success text-light ml-2" href="" data-toggle="tooltip" data-placement="top" title="Close">
+                        {% url 'komax_close_dr' cnum=dr.control_no as closedr_url %}
+                        <a class="btn btn-success ml-2" href="{{closedr_url}}_{{page_obj.number}}" data-toggle="tooltip" data-placement="top" title="Close">
                             <i class="material-icons">done</i>
                         </a>
                       {% endif %}
                     </td>
-                  </tr>
+                  </tr> 
                 {% endfor %}
                 </tbody>
               </table>
@@ -86,11 +92,11 @@
               {% comment %} <a class="btn btn-info p-2 float-left" href="{% url 'komax_new_dr' %}">
                 <i class="material-icons">note_add</i> &nbsp; New Dr
               </a> {% endcomment %}
-              <button class="btn btn-info p-2 float-left" data-toggle="modal" data-target="#drformModal" onclick="drFormTransaction('')">
+              <button class="btn btn-info p-2 mt-0 pt-0 pb-0 mb-0 float-left" data-toggle="modal" data-target="#drformModal" onclick="drFormTransaction('')">
                 <i class="material-icons">note_add</i> &nbsp; New Dr
               </button>
               {% if is_paginated %}
-                <ul class="pagination justify-content-end">
+                <ul class="pagination justify-content-end mb-0 pb-0">
                   {% if page_obj.has_previous %}
                     <li class="border-top border-bottom page-item border-left rounded-left"><a class="page-link" style="color: #00bcd4;" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                   {% else %}
@@ -134,7 +140,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" autocomplete="off" action="{% url 'new_or_rename_dr' %}">
+            <form method="POST" autocomplete="off" action="{% url 'komax_new_or_rename_dr' %}">
               {% csrf_token %}
               <div class="form-group">
                   <div class="row">
@@ -188,6 +194,29 @@
         </div>
       </div>
     </div>
+
+    <!-- Delete DR Modal -->
+    <div class="modal fade" id="drformDeleteModal" tabindex="-1" role="dialog" aria-labelledby="drformDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title h3 font-weight-bold">Delete Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="font-weight-bold text-dark h3" >Are you sure to <strong>Delete</strong> DR <strong><span class="text-danger" id="delete_modal_control"></span></strong>?</div>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="form_ctrl" name="form_ctrl" value="">
+            <button type="button" class="btn" data-dismiss="modal">No</button>
+            <a class="btn btn-primary" id="deletey" href="">Yes</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock content %}
 
 {% block scriptNotReady %}
@@ -203,6 +232,11 @@
     }
   }
 
+  function delete_dr_confirm(urla, cnum) {
+    $('#drformDeleteModal').modal('show');
+    $('#delete_modal_control').text(cnum);
+    $('#deletey').attr("href", urla);
+  }
 {% endblock scriptNotReady %}
 
 {% block script %}

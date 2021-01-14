@@ -35,25 +35,28 @@ The above copyright notice and this permission notice shall be included in all c
   <script src="{% static 'assets2/datepicker/dtsel.js' %}"></script>
 </head>
 
-<body class="">
+<body class="sidebar-mini">
   <div class="wrapper ">
     <div class="sidebar" data-color="purple" data-background-color="white" data-image="{% static 'assets/img/sidebar-3.jpg' %}">
       <!--
         change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
       -->
-      <div class="logo"><a href="#" class="simple-text logo-normal">
-          <img class='ologo' src="{% static 'img/ttech_logo.png' %}" alt="ologo" width="40" height="40">&nbsp;&nbsp;&nbsp;DR SYSTEM
-        </a></div>
+      <div class="logo text-center pb-0">
+        <img class='ologo' src="{% static 'img/ttech_logo.png' %}" alt="ologo" width="40" height="40">
+        <a href="#" class="simple-text logo-normal">
+          <small class=" font-weight-bold">Torres Technology Center Corp.</small>
+        </a>
+      </div>
       <div class="sidebar-wrapper">
         <ul class="nav font-weight-bold">
           <li class="nav-item {% if title == 'DASHBOARD' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'dashboard' %}">
+            <a class="nav-link pl-2" href="{% url 'dashboard' %}">
               <i class="material-icons">dashboard</i>
               <p>DASHBOARD</p>
             </a>
           </li>
           <li class="nav-item {% if title == 'KOMAX' %}active{% endif %}">
-            <a class="nav-link" href="{% url 'komax_home' %}"  {% if 'KOMAX' not in lista %} disable {% endif %}>
+            <a class="nav-link pl-2" href="{% url 'komax_home' %}"  {% if 'KOMAX' not in lista %} disable {% endif %}>
               <i class="material-icons">apartment</i>
               <p>KOMAX</p>
             </a>
@@ -127,7 +130,7 @@ The above copyright notice and this permission notice shall be included in all c
         </div>
       </nav>
       <!-- End Navbar -->
-      <div class="content">
+      <div class="content p-0">
         <div class="container-fluid">
           {% if messages %}
               {% for message in messages %}
@@ -335,7 +338,7 @@ The above copyright notice and this permission notice shall be included in all c
     {% endblock scriptNotReady %}
     
     $(document).ready(function() {
-      {% comment %} triggerAnimation(); {% endcomment %}
+      triggerAnimation();
       setTimeout(function(){ 
         $(".notifMessage").removeClass( "fadeInDown" ).addClass( "fadeOutUp" );
       }, 5000);

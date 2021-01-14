@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %} 
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-9">
+    <div class="card pb-0 mb-0">
+      <div class="card-header card-header-warning">
+        <h4 class="card-title w-50">DR Items</h4>
+        <button id="new_item_btn"
+                class="btn btn-secondary p-2 mt-0 pt-0 pb-0 mb-0 float-left"
+                style="position:absolute; top:13px; right:5px;"
+                data-toggle="modal"
+                data-target="#dritemModal"
+                onclick="drItemTransaction('')"
+                {% if dr_items|length >= 10 or dr_form.status.value != "OPEN" %}
+                  disabled
+                {% endif %}>
+          <i class="material-icons">add_to_photos</i> &nbsp; New Item
+        </button>
+      </div>
+      <div class="card-body pb-0 pt-0">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="text-warning">
+              <tr>
+                <th class="pt-0 pb-0" rowspan=2>No.</th>
+                <th class="pt-0 pb-0" rowspan=2>Product No.</th>
+                <th class="pt-0 pb-0" rowspan=2>Wos No.</th>
+                <th class="pt-0 pb-0 text-center" colspan=5>Quantity</th>
+                <th class="pt-0 pb-0" rowspan=2></th>
+              </tr>
+              <tr>
+                <th class="pt-0 pb-0">1st</th>
+                <th class="pt-0 pb-0">2nd</th>
+                <th class="pt-0 pb-0">3rd</th>
+                <th class="pt-0 pb-0">4th</th>
+                <th class="pt-0 pb-0">5th</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in dr_items %}
+              <tr class="">
+                <td class=" pt-2 pb-1">{{forloop.counter}}</td>
+                <td class=" pt-2 pb-1 h4">{{item}}</td>
+                <td class=" pt-2 pb-1 h4">{{item.wos_no}}</td>
+                <td class=" pt-2 pb-1 h4">{{item.first_quantity}}</td>
+                <td class=" pt-2 pb-1 h4">{{item.second_quantity}}</td>
+                <td class=" pt-2 pb-1 h4">{{item.third_quantity}}</td>
+                <td class=" pt-2 pb-1 h4">{{item.fourth_quantity}}</td>
+                <td class=" pt-2 pb-1 h4">{{item.fifth_quantity}}</td>
+                <td class="td-actions pt-0 pb-0 pl-0 text-right">
+                  {% url 'komax_edit_item' cnum=item.control_no as edit_url %} 
+                  <a class="btn btn-info" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="Edit">
+                      <i class="material-icons">edit</i>
+                  </a>
+                  {% url 'komax_delete_dr' cnum=item.control_no as delete_url %}
+                  <button class="btn btn-danger ml-2" onclick="delete_dr_confirm('{{delete_url}}_{{page_obj.number}}', '{{item.control_no}}')" data-toggle="tooltip" data-placement="top" title="Delete">
+                      <i class="material-icons">close</i>
+                  </button>
+                </td>
+              </tr> 
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+  <div class="card">
+    <div class="card-header card-header-primary">
+      <h4 class="card-title text-center">Control No. <span class="font-weight-bold text-warning h3">{{cnum}}</span></h4>
+    </div>
+    <div class="card-body">
+      <form method="POST" autocomplete="off">
+        {% csrf_token %}
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                {% comment %} <label class="bmd-label-floating">Control No.</label> {% endcomment %}
+                {% render_field dr_form.control_no class="form-control h5 font-weight-bold" type="hidden" %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="bmd-label-floating">Date</label>
+                {% render_field dr_form.date_created class="form-control datepicker h5 font-weight-bold" %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group input-group-prepend">
+                <label class="bmd-label-floating mr-2" >Customer</label>
+                {% render_field dr_form.customer class="form-control h5 font-weight-bold " %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group input-group-prepend">
+                <label class="bmd-label-floating ">Line</label>
+                {% render_field dr_form.line class="form-control h5 font-weight-bold" %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group input-group-prepend">
+                <label class="bmd-label-floating ">Status</label>
+                {% if dr_items|length == 0 or dr_form.status.value != "OPEN" %}
+                  {% render_field dr_form.status|attr:"disabled:True" class="form-control h5 font-weight-bold"  %}
+                {% else %}
+                  {% render_field dr_form.status class="form-control h5 font-weight-bold" %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="form_ctrl" value="dr_form">
+        <button type="submit" class="btn btn-primary pull-right">Save</button>
+        <div class="clearfix"></div>
+      </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- DR Modal -->
+<div class="modal fade" id="dritemModal" tabindex="-1" role="dialog" aria-labelledby="dritemModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title h3 font-weight-bold" id="dritemModalLabel"><span id="dritemTransactionTitle"></span> ITEM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" autocomplete="off">
+          {% csrf_token %}
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Product No.</label>
+                  {% render_field item_form.product_no class="form-control datepicker h5 font-weight-bold" %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="bmd-label-floating">Wos No.</label>
+                  {% render_field item_form.wos_no class="form-control h5 font-weight-bold" %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+              </div>
+              <div class="col-md-8">
+                <div class="form-group input-group-prepend">
+                  <label class="bmd-label-floating mr-2" >1ST</label>
+                  {% render_field item_form.first_quantity class="form-control h5 font-weight-bold " %}
+                </div>
+              </div>
+            </div>
+            {{item_form.second_quantity}}
+            {{item_form.third_quantity}}
+            {{item_form.fourth_quantity}}
+            {{item_form.fifth_quantity}}
+            {{item_form.control_noFK}}
+          </div>
+      </div>
+      <div class="modal-footer">
+        <input type="hidden" id="form_ctrl" name="form_ctrl" value="olo">
+        <button type="button" class="btn" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block scriptNotReady %}
+
+  function drItemTransaction(control_no) {
+    if (control_no == "" ) {
+      $('#dritemTransactionTitle').text("New");
+      $('#form_ctrl').val('new_item');
+    } else {
+      $('#drFormTransactionTitle').text("Edit");
+      $('#form_ctrl').val(control_no);
+    }
+  }
+
+{% endblock scriptNotReady %}
+
+{% block script %}
+  $('#new_item_btn').focus();
+  $('#id_date_created').datepicker({
+                dateFormat: 'yy-mm-dd'
+  });
+
+{% endblock script %}
