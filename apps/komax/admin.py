@@ -17,7 +17,7 @@ class Drforms(admin.ModelAdmin):
     list_display = ( 'control_no', 'customer', 'date_created', 'status')
 
     search_fields = ['control_no',]
-    list_filter = ['customer']
+    list_filter = ['customer', 'status']
     actions = [set_open, set_waiting, set_closed ]
 
 class Dritems(admin.ModelAdmin):

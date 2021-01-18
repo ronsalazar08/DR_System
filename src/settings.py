@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'widget_tweaks',
     'src',
-    'apps.komax'
+    'apps.accounting',
+    'apps.komax',
 ]
 
 MIDDLEWARE = [

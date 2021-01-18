@@ -9,6 +9,7 @@ urlpatterns = [
     path('delete_dr/<slug:cnum>', login_required(views.delete_dr), name='komax_delete_dr'),
     path('close_dr/<slug:cnum>', login_required(views.close_dr), name='komax_close_dr'),
     path('edit_dr/<slug:cnum>', login_required(views.edit_dr), name='komax_edit_dr'),
+    path('delete_item/<int:pk>', login_required(views.delete_item), name='komax_delete_item'),
     # path('create/', login_required(views.DrFormCreateView.as_view()), name='komax_new_dr'),
     # path('delete/<int:pk>/', login_required(views.DrFormDeleteView.as_view()), name='komax_delete_dr'),
 ]

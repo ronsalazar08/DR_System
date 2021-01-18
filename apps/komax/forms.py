@@ -11,7 +11,7 @@ class NewDrForm(forms.ModelForm):
 
     statusCHOICES=[('OPEN','OPEN'),
                    ('WAITING','WAITING'),
-                #    ('CLOSED','CLOSED')
+                   ('CLOSED','CLOSED')
                    ]
     
 

@@ -1,0 +1,86 @@
+@media print{
+    html{
+        height: 100%;
+    }
+    #new_item_btn, 
+    #save_btn, 
+    .card-title,
+    .card-header,
+    form,th,
+    #print_btn,
+    .navbar, #actiontd,
+    .footer, .sidebar{
+        display:none !important;
+    }
+
+    *{
+        font-family: "Arial";
+        font-weight: normal;
+        color: black !important;
+        -webkit-box-shadow: none !important;
+        -webkit-border: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        text-decoration: none !important;
+    }
+
+    table, table td{
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+    table{
+        position: absolute !important;
+        /* top: 236px !important;
+        left: -55px !important; */
+        top: 150px !important;
+        left: 120px !important;
+        
+        width: 600px !important;
+        /* border: solid 1px black !important; */
+    }
+    
+    div{
+         border: none !important;
+    }
+    
+    @page {size: portrait}
+    #remarks_div, #customer_div, #date_div, #signature_div{
+        display: block !important;
+    }
+    #table, .wrapper{
+        outline: none !important;
+        border: none !important;
+        -webkit-box-shadow: none !important;
+        box-shadow: none !important;
+    }
+    #seqtd{
+        /* color: transparent !important; */
+        display: none;
+
+     }
+    #prodtd{
+        width: 155px !important;
+        font-size: 14px !important;
+        height: 10px !important;
+        line-height: 12px !important;
+    } 
+    #wostd{
+        /*  */
+        width: 60px !important;
+        font-size: 14px !important;
+        height: 10px !important;
+        line-height: 12px !important;
+    }
+
+    #firsttd,
+    #secondtd,
+    #thirdtd,
+    #fourthtd,
+    #fifthtd{
+        width: 40px !important;
+        /* overflow: hidden !important; */
+        font-size: 14px !important;
+        height: 10px !important;
+        line-height: 12px !important;
+    }
+}

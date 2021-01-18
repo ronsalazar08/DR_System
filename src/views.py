@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-# def check_group(request):
-#     print(request.user.username)
-#     if request.user.groups.filter(name='komax').exists():
-#         return redirect('test')
-#     else:
-#         return redirect('/admin/')
+
+def permitted_apps(usera):
+    """
+    Returning list of allowed apps for current user
+    """
+    lista = [i.upper() for i in usera.groups.values_list('name', flat=True)]
+    return lista
+
 
 def dashboard(request):
     """
@@ -15,5 +17,6 @@ def dashboard(request):
     title='DASHBOARD'
     context = {
         'title' : title,
+        'lista' : permitted_apps(request.user),
     }
     return render(request, 'dashboard.html', context)

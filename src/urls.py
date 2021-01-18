@@ -14,8 +14,8 @@ admin.site.enable_nav_sidebar = False
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('komax/', include('apps.komax.urls')),
+    path('accounting/', include('apps.accounting.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    # path('check_group/', src_views.check_group, name='check_group'),
     path('dashboard/', login_required(src_views.dashboard), name='dashboard'),
 ]

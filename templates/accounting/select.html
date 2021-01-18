@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons" style="font-size: 2em;">insights</i>
+        </div>
+      </div>
+      <div class="card-body">
+          <h4 class="card-title text-center h3 font-weight-bold">{{dept}} SUMMARY</h4>
+        <form method="post">
+        {% csrf_token %}
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-8 mx-auto">
+                <div class="form-group input-group-prepend">
+                  <label class="bmd-label-floating mr-2" >Customer</label>
+                  {% render_field form.customer class="form-control h5 font-weight-bold" %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8 mx-auto">
+                <div class="form-group input-group-prepend">
+                  <label class="bmd-label-floating mr-2" >Month</label>
+                  {% render_field form.month class="form-control h5 font-weight-bold" %}
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8 mx-auto">
+                <div class="form-group input-group-prepend">
+                  <label class="bmd-label-floating mr-2" >Year</label>
+                  {% render_field form.year class="form-control h5 font-weight-bold" %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="form_ctrl" value="dr_form">
+          <button id="save_btn" type="submit" class="btn btn-rose pull-right">Confirm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block scriptNotReady %}
+
+{% endblock scriptNotReady %}
+
+{% block script %}
+
+
+{% endblock script %}
