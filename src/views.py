@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
+import shutil
+import os
 
 def permitted_apps(usera):
     """
@@ -11,12 +12,17 @@ def permitted_apps(usera):
 
 
 def dashboard(request):
-    """
-    dashboard page
-    """
+    
+    total, used, free = shutil.disk_usage("/")
+    temp = os.popen("vcgencmd measure_temp").readline().replace("temp=","")
+    
     title='DASHBOARD'
     context = {
         'title' : title,
         'lista' : permitted_apps(request.user),
+        'total_memory'  : (total // (2**30)),
+        'used_memory'   : (used // (2**30)),
+        'free_memory'   : (free // (2**30)),
+        'temperature'   : temp,
     }
     return render(request, 'dashboard.html', context)
