@@ -44,6 +44,7 @@ def SelectView(request, dept):
     }
     return render(request, 'accounting/select.html', context)
 
+
 def SummaryView(request, dept, customer, month, year):
     customerS = customer
     monS = month
@@ -68,7 +69,7 @@ def SummaryView(request, dept, customer, month, year):
                                         (select customer from {dept.lower()}_dr_form where control_no = cn limit 1) AS customer,
                                         (select status from {dept.lower()}_dr_form where control_no = cn limit 1) AS status
                                     FROM {dept.lower()}_dr_item ) AS t
-                                WHERE t.customer = '{customerS}' AND t.date_created LIKE '{yearS}-{monS}%%' ORDER BY cn, date_created;""")
+                                WHERE t.customer = '{customerS}' AND t.status="CLOSED" AND t.date_created LIKE '{yearS}-{monS}%%' ORDER BY cn, date_created;""")
     context = {
         'items': objs,
         'customerS' :   customerS,

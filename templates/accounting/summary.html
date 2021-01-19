@@ -4,10 +4,11 @@
 
 
 {% block content %}
-
+{% if items|length != 0 %}
 <button type="button" class="btn btn-primary font-weight-bold m-0" id="printSummary" onclick="tablesToExcel(['tablesum'], ['Sheet1'], 'myfile.xls')" style="position: sticky; top: 20px; left: 23px;">Download</button>
-<table id="tablesum" class="text-center table table-bordered shadow-lg table-striped font-weight-bold table-hover p-0 mx-auto w-75">
-    <thead class="thead-dark">
+{% endif %}
+<table id="tablesum" class="text-center table table-bordered table-striped font-weight-bold table-hover p-0 mx-auto w-75">
+    <thead class="thead-dark ">
         <tr>
         <th colspan=8 class="text-center border-bottom-0 pb-3">TORRES TECHNOLOGY CENTER CORPORATION</th>
         </tr>
@@ -40,7 +41,7 @@
     </thead>
     <tbody class="tableb ">
     {% for item in items %}
-        {% if item.status == 'CLOSED' %}
+        {% comment %} {% if item.status == 'CLOSED' %} {% endcomment %}
         <tr>
             <td>{{item.cn}}</td>
             <td>{{item.date_created|date:"m/d/y"}}</td>
@@ -50,8 +51,8 @@
             <td class="qty">{{item.quantity}}</td>
             <td class="subtot"></td>
             <td></td>
-            </tr>
-        {% endif %}
+        </tr>
+        {% comment %} {% endif %} {% endcomment %}
             {% if forloop.last %}
             <tr>
             <td></td>

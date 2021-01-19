@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %} 
+
+{% block content %}
+  <style>
+    ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+      color:    white;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+      color:    white;
+      opacity:  1;
+    }
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+      color:    white;
+      opacity:  1;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color:    white;
+    }
+    ::-ms-input-placeholder { /* Microsoft Edge */
+      color:    white;
+    }
+
+    ::placeholder { /* Most modern browsers support this now. */
+      color:    white;
+    }
+  </style>
+
+    <div class="row pb-0 mb-0">
+      <div class="col-md-12 pb-0 mb-0">
+        <div class="card pb-0 mb-0">
+          <div class="card-header card-header-info">
+            <h4 class="card-title w-50">List of DR</h4>
+            <form method="GET">
+              <input id="search" name="search" type="text" placeholder="Search.." class="border-bottom text-light w-25" style="border: 0; background: none; position:absolute; top:15px; right:40px;" value="{{search|default_if_none:""}}" >
+              {% if search != None and search != "" %}
+                <button id="clear_search" type="submit" class="btn btn-white btn-round btn-sm btn-just-icon" style="position:absolute; top:10px; right:5px;">
+                  <i class="material-icons">close</i>
+                </button>
+              {% endif %}
+            </form>
+          </div>
+          <div class="card-body p-2">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="text-info">
+                  <tr>
+                    <th class="pt-0 pb-0">Control No.</th>
+                    <th class="pt-0 pb-0">Date</th>
+                    <th class="pt-0 pb-0">Costumer</th>
+                    <th class="pt-0 pb-0">Line</th>
+                    <th class="pt-0 pb-0">Status</th>
+                    <th class="p-0"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for dr in dr_forms %}
+                  <tr class="">
+                    <td class="font-weight-bold h4">{{dr}}</td>
+                    <td>{{dr.date_created|date:'m-d-Y'}}</td>
+                    <td>{{dr.customer}}</td>
+                    <td>{{dr.line}}</td>
+                    <td>{{dr.status}}</td>
+                    <td class="td-actions pt-0 pb-0 pl-0 text-right">
+                      {% url 'foiling_edit_dr' cnum=dr.control_no as edit_url %} 
+                      <a class="btn btn-warning text-light" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="Edit">
+                          <i class="material-icons">edit</i>
+                      </a>
+                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal" data-toggle="tooltip" data-placement="top" title="Rename">
+                          <i class="material-icons">loop</i>
+                      </button>
+                      {% if dr.status == 'OPEN' %}
+                        {% comment %} <a class="btn btn-rose text-light ml-2" href="{% url 'foiling_delete_dr' pk=dr.pk %}" data-toggle="tooltip" data-placement="top" title="Delete">
+                            <i class="material-icons">close</i>
+                        </a> {% endcomment %}
+                        {% url 'foiling_delete_dr' cnum=dr.control_no as delete_url %}
+                        <button class="btn btn-rose ml-2" onclick="delete_dr_confirm('{{delete_url}}_{{page_obj.number}}', '{{dr.control_no}}')" data-toggle="tooltip" data-placement="top" title="Delete">
+                            <i class="material-icons">close</i>
+                        </button>
+                      {% else %}
+                        {% url 'foiling_close_dr' cnum=dr.control_no as closedr_url %}
+                        <a class="btn btn-success ml-2" href="{{closedr_url}}_{{page_obj.number}}" data-toggle="tooltip" data-placement="top" title="Close">
+                            <i class="material-icons">done</i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  </tr> 
+                {% empty %}
+                  <tr>
+                    <td colspan=6 class="h3 text-center">No Data to Display</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <nav aria-label="Page navigation">
+              {% comment %} <a class="btn btn-info p-2 float-left" href="{% url 'foiling_new_dr' %}">
+                <i class="material-icons">note_add</i> &nbsp; New Dr
+              </a> {% endcomment %}
+              <button class="btn btn-info p-2 mt-0 pt-0 pb-0 mb-0 float-left" data-toggle="modal" data-target="#drformModal" onclick="drFormTransaction('')">
+                <i class="material-icons">note_add</i> &nbsp; New Dr
+              </button>
+              {% if is_paginated %}
+                <ul class="pagination justify-content-end mb-0 pb-0">
+                  {% if page_obj.has_previous %}
+                    <li class="border-top border-bottom page-item border-left rounded-left"><a class="page-link" style="color: #00bcd4;" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                  {% else %}
+                    <li class="border-top border-bottom page-item border-left rounded-left page-link disabled"</li>
+                  {% endif %}
+                  {% if page_obj.number|add:'-3' > 1 %}
+                    <li class="border-top border-bottom page-item"  ><a class="page-link rounded" style="color: #00bcd4;" href="?page={{ page_obj.number|add:'-3' }}">&hellip;</a></li>
+                  {% endif %}
+                  {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                      <li class="border-top border-bottom page-item page-link rounded text-light" style="background-color: #00bcd4;"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% elif i > page_obj.number|add:'-4' and i < page_obj.number|add:'4' %}
+                      <li class="border-top border-bottom page-item"><a class="page-link rounded" style="color: #00bcd4;" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+                  {% if page_obj.paginator.num_pages > page_obj.number|add:'3' %}
+                    <li class="border-top border-bottom page-item" ><a class="page-link rounded" style="color: #00bcd4;" href="?page={{ page_obj.number|add:'3' }}">&hellip;</a></li>
+                  {% endif %}
+                  {% if page_obj.has_next %}
+                    <li class="border-top border-bottom page-item border-right rounded-right"><a class="page-link" style="color: #00bcd4;" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                  {% else %}
+                    <li class="border-top border-bottom page-item border-right rounded-right page-link disabled"></li>
+                  {% endif %}
+                </ul>
+              {% endif %}
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DR Modal -->
+    <div class="modal fade" id="drformModal" tabindex="-1" role="dialog" aria-labelledby="drformModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title h3 font-weight-bold" id="drformModalLabel"><span id="drFormTransactionTitle"></span> DR <span id="drRenameControl"></span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" autocomplete="off" action="{% url 'foiling_new_or_rename_dr' %}">
+              {% csrf_token %}
+              <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Date</label>
+                        {% render_field form.date_created class="form-control datepicker h5 font-weight-bold" %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="form-group">
+                        <label class="bmd-label-floating">Control No.</label>
+                        {% render_field form.control_no class="form-control h5 font-weight-bold" %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="form-group input-group-prepend">
+                        <label class="bmd-label-floating mr-2" >Customer</label>
+                        {% render_field form.customer class="form-control h5 font-weight-bold " %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="form-group input-group-prepend">
+                        <label class="bmd-label-floating ">Line</label>
+                        {% render_field form.line class="form-control h5 font-weight-bold" %}
+                      </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="form_ctrl" name="form_ctrl" value="">
+            <button type="button" class="btn" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete DR Modal -->
+    <div class="modal fade" id="drformDeleteModal" tabindex="-1" role="dialog" aria-labelledby="drformDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title h3 font-weight-bold"><i class="material-icons" style="font-size: 1.5em;">warning</i> &nbsp; Delete Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="font-weight-bold text-dark h3" >Are you sure to <strong>Delete</strong> DR <strong><span class="text-danger" id="delete_modal_control"></span></strong>?</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn" data-dismiss="modal">No</button>
+            <a class="btn btn-primary" id="deletey" href="">Yes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock content %}
+
+{% block scriptNotReady %}
+
+  function drFormTransaction(control_no) {
+    if (control_no == "" ) {
+      $('#drFormTransactionTitle').text("New");
+      $('#form_ctrl').val('new_dr');
+    } else {
+      $('#drFormTransactionTitle').text("Rename");
+      $('#drRenameControl').html(`(<span class="text-primary">${control_no}</span>)`);
+      $('#form_ctrl').val(control_no);
+    }
+  }
+
+  function delete_dr_confirm(urla, cnum) {
+    $('#drformDeleteModal').modal('show');
+    $('#delete_modal_control').text(cnum);
+    $('#deletey').attr("href", urla);
+  }
+{% endblock scriptNotReady %}
+
+{% block script %}
+
+  $("#clear_search").click(function() {
+    $("#search").val("");
+  });
+  $('#id_date_created').datepicker({
+                dateFormat: 'yy-mm-dd'
+  });
+
+
+{% endblock script %}

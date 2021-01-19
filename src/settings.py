@@ -25,7 +25,7 @@ SECRET_KEY = '6x6punwdrfra=i7u(s*hs@0nm%73&))o*wlhwm&0&!ec2)9zgn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.44.2.187', 'localhost', '192.168.18.17']
+ALLOWED_HOSTS = ['10.44.2.187', 'localhost']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'src',
     'apps.accounting',
+    'apps.foiling',
     'apps.komax',
 ]
 

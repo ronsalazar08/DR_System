@@ -1,7 +1,6 @@
 import math
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
 from django.contrib.auth.models import Permission
 from django.core.paginator import EmptyPage, Paginator
 from django.contrib.messages.views import SuccessMessageMixin
@@ -16,7 +15,6 @@ def permitted_apps(usera):
     Returning list of allowed apps for current user
     """
     lista = [i.upper() for i in usera.groups.values_list('name', flat=True)]
-    print(lista)
     return lista
 
 
@@ -34,7 +32,7 @@ class SafePaginator(Paginator):
 class DrFormListView(ListView):
     model = dr_form
     paginator_class = SafePaginator
-    template_name = 'dr_home.html'  
+    template_name = 'komax/dr_home.html'  
     context_object_name = 'dr_forms' 
     paginate_by = 7 #if changed change also in edit_dr math
 
@@ -74,7 +72,9 @@ def new_or_rename_dr(request):
                     olo = form.cleaned_data['control_no']
                     form.save()
                     messages.success(request, f'Success: DR <strong class=" font-weight-bold">{form.cleaned_data["control_no"]}</strong> successfully Created!')
-                    return redirect('komax_home') #change to edit dr +++++++++++++++++++++
+                    # return redirect('komax_home') 
+                    return redirect(f'/komax/edit_dr/{form.cleaned_data["control_no"]}')
+
                 else:
                     messages.error(request, f'Error: DR <strong class=" font-weight-bold">{request.POST.get("control_no")}</strong> already exist!')
 
@@ -94,7 +94,9 @@ def new_or_rename_dr(request):
                     old.delete()
                     messages.success(request, f' Success: DR <strong class=" font-weight-bold">{old_dr}</strong> Renamed to <strong class=" font-weight-bold">{form.cleaned_data["control_no"]}</strong>!')
 
-                    return redirect('komax_home') #change to edit dr +++++++++++++++++++++
+                    # return redirect('komax_home') 
+                    return redirect(f'/komax/edit_dr/{form.cleaned_data["control_no"]}')
+
                 else:
                     messages.error(request, f'Error: DR <strong class=" font-weight-bold">{request.POST.get("control_no")}</strong> already exist!')
             else:
@@ -133,57 +135,58 @@ def close_dr(request, cnum):
 
 
 def edit_dr(request, cnum):
-    if request.method == 'POST':
-        form_ctrl = request.POST.get('form_ctrl')
-        if form_ctrl == "dr_form":
-            form = NewDrForm(request.POST, instance=dr_form.objects.get(control_no=cnum))
-            item_form = NewDrItem()
-            if form.is_valid():
-                form.save()
+    try:
+        if request.method == 'POST':
+            form_ctrl = request.POST.get('form_ctrl')
+            if form_ctrl == "dr_form":
+                form = NewDrForm(request.POST, instance=dr_form.objects.get(control_no=cnum))
+                item_form = NewDrItem()
+                if form.is_valid():
+                    form.save()
 
-                pk = dr_form.objects.get(control_no=cnum).pk
-                blist = dr_form.objects.all().values_list('pk', flat=True).order_by('control_no')
-                position = list(blist).index(pk)
-                if position == 0:
-                    page = 1
-                else:
-                    page = math.floor(position/7)+1
-                messages.success(request, f' Success: DR <strong class=" font-weight-bold">{cnum}</strong> Saved!')
-                return redirect(f'http://{request.get_host()}/komax/?page={page}')
+                    pk = dr_form.objects.get(control_no=cnum).pk
+                    blist = dr_form.objects.all().values_list('pk', flat=True).order_by('control_no').exclude(status='CLOSED')
+                    position = list(blist).index(pk)
+                    if position == 0:
+                        page = 1
+                    else:
+                        page = math.floor(position/7)+1
+                    messages.success(request, f' Success: DR <strong class=" font-weight-bold">{cnum}</strong> Saved!')
+                    return redirect(f'http://{request.get_host()}/komax/?page={page}')
 
-        elif form_ctrl == "new_item":
-            form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
-            item_form = NewDrItem(request.POST)
-            new_form1 = item_form.save(commit=False)
-            new_form1.control_noFK = dr_form.objects.get(control_no=cnum)
-            if item_form.is_valid():
-                # cnum=form1.cleaned_data['control_noFK']
-                item_form.save()
-                messages.success(request, f' Item <strong class=" font-weight-bold">{item_form.cleaned_data["product_no"]} {item_form.cleaned_data["wos_no"]}</strong> Added!')
-                return redirect(f'/komax/edit_dr/{cnum}')
+            elif form_ctrl == "new_item":
+                form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
+                item_form = NewDrItem(request.POST)
+                new_form1 = item_form.save(commit=False)
+                new_form1.control_noFK = dr_form.objects.get(control_no=cnum)
+                if item_form.is_valid():
+                    # cnum=form1.cleaned_data['control_noFK']
+                    item_form.save()
+                    messages.success(request, f' Item <strong class=" font-weight-bold">{item_form.cleaned_data["product_no"]} {item_form.cleaned_data["wos_no"]}</strong> Added!')
+                    return redirect(f'/komax/edit_dr/{cnum}')
 
-        elif form_ctrl:
-            pk = form_ctrl
-            form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
-            item_form = NewDrItem(request.POST, instance=dr_item.objects.get(pk=pk))
-            new_form1 = item_form.save(commit=False)
-            new_form1.control_noFK = dr_form.objects.get(control_no=cnum)
-            if item_form.is_valid():
-                # cnum=form1.cleaned_data['control_noFK']
-                item_form.save()
-                messages.info(request, f' Item <strong class=" font-weight-bold">{item_form.cleaned_data["product_no"]} {item_form.cleaned_data["wos_no"]}</strong> Changed!')
-                return redirect(f'/komax/edit_dr/{cnum}')
+            elif form_ctrl:
+                pk = form_ctrl
+                form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
+                item_form = NewDrItem(request.POST, instance=dr_item.objects.get(pk=pk))
+                new_form1 = item_form.save(commit=False)
+                new_form1.control_noFK = dr_form.objects.get(control_no=cnum)
+                if item_form.is_valid():
+                    # cnum=form1.cleaned_data['control_noFK']
+                    item_form.save()
+                    messages.info(request, f' Item <strong class=" font-weight-bold">{item_form.cleaned_data["product_no"]} {item_form.cleaned_data["wos_no"]}</strong> Changed!')
+                    return redirect(f'/komax/edit_dr/{cnum}')
+            else:
+                form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
+                item_form = NewDrItem()
         else:
             form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
             item_form = NewDrItem()
-    else:
-        try:
-            form = NewDrForm(instance=dr_form.objects.get(control_no=cnum))
-            item_form = NewDrItem()
-        except:
-            messages.error(request, f"Error: Please Try Again!")
-            return redirect('komax_home')
+    except:
+        messages.error(request, f"Error: Please Try Again!")
+        return redirect('komax_home')
 
+    signed_by = ""
     if request.user.username == 'komaxa':
         signed_by = "JOSIE AUTOS"
     elif request.user.username == 'komaxb':
@@ -195,9 +198,9 @@ def edit_dr(request, cnum):
         'item_form' :   item_form,
         'dr_items' :   dr_item.objects.filter(control_noFK=cnum).order_by('id'),
         'lista' : permitted_apps(request.user),
-        # 'signed_by' : signed_by
+        'signed_by' : signed_by
     }
-    return render(request, 'dr_detail.html', context)
+    return render(request, 'komax/dr_detail.html', context)
 
 
 def delete_item(request, pk):
