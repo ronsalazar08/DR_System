@@ -187,9 +187,9 @@ def edit_dr(request, cnum):
         return redirect('komax_home')
 
     signed_by = ""
-    if request.user.username == 'komaxa':
+    if 'shifta' in request.user.groups.values_list('name', flat=True):
         signed_by = "JOSIE AUTOS"
-    elif request.user.username == 'komaxb':
+    elif 'shiftb' in request.user.groups.values_list('name', flat=True):
         signed_by = "GLORIA PASTOR"
     context = {
         'title' : 'KOMAX',

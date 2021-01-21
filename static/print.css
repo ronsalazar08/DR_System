@@ -44,7 +44,7 @@
     }
     
     @page {size: portrait}
-    #remarks_div, #customer_div, #date_div, #signature_div{
+    #remarks_div, #customer_div, #date_div, #signature_div, #prepare_div{
         display: block !important;
     }
     #table, .wrapper{
