@@ -34,7 +34,7 @@ class DrFormListView(ListView):
     paginator_class = SafePaginator
     template_name = 'komax/dr_home.html'  
     context_object_name = 'dr_forms' 
-    paginate_by = 7 #if changed change also in edit_dr math
+    paginate_by = 9 #if changed change also in edit_dr math
 
     def get_context_data(self, **kwargs):
         context = super(DrFormListView, self).get_context_data(**kwargs)
@@ -138,6 +138,7 @@ def edit_dr(request, cnum):
     try:
         if request.method == 'POST':
             form_ctrl = request.POST.get('form_ctrl')
+            print(form_ctrl)
             if form_ctrl == "dr_form":
                 form = NewDrForm(request.POST, instance=dr_form.objects.get(control_no=cnum))
                 item_form = NewDrItem()
@@ -150,7 +151,7 @@ def edit_dr(request, cnum):
                     if position == 0:
                         page = 1
                     else:
-                        page = math.floor(position/7)+1
+                        page = math.floor(position/9)+1
                     messages.success(request, f' Success: DR <strong class=" font-weight-bold">{cnum}</strong> Saved!')
                     return redirect(f'http://{request.get_host()}/komax/?page={page}')
 
@@ -164,6 +165,16 @@ def edit_dr(request, cnum):
                     item_form.save()
                     messages.success(request, f' Item <strong class=" font-weight-bold">{item_form.cleaned_data["product_no"]} {item_form.cleaned_data["wos_no"]}</strong> Added!')
                     return redirect(f'/komax/edit_dr/{cnum}')
+            elif form_ctrl == "back_btn":
+                pk = dr_form.objects.get(control_no=cnum).pk
+                blist = dr_form.objects.all().values_list('pk', flat=True).order_by('control_no').exclude(status='CLOSED')
+                position = list(blist).index(pk)
+                if position == 0:
+                    page = 1
+                else:
+                    page = math.floor(position/9)+1
+                # messages.warning(request, f' Nothings Changed on DR <strong class=" font-weight-bold">{cnum}</strong>!')
+                return redirect(f'http://{request.get_host()}/komax/?page={page}')
 
             elif form_ctrl:
                 pk = form_ctrl

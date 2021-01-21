@@ -48,7 +48,7 @@
                 <td id="fifthtd" class="quantity pt-2 pb-1 h5">{{item.fifth_quantity}}</td>
                 {% if dr_form.status.value == "OPEN" %}
                   <td id="actiontd" class="td-actions pt-0 pb-0 pl-0 text-right">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-toggle="tooltip" data-target="#dritemModal" data-placement="top" title="Edit" onclick="drItemTransaction('{{item.pk}}', '{{item.product_no}}', '{{item.wos_no}}', {{item.first_quantity}})">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-toggle="tooltip" data-target="#dritemModal" data-placement="top" title="Edit" onclick="drItemTransaction('{{item.pk}}', '{{item.product_no}}', '{{item.wos_no}}', {{item.first_quantity}})">
                         <i class="material-icons">edit</i>
                     </button type="button">
                     {% url 'komax_delete_item' pk=item.pk as delete_url %}
@@ -135,11 +135,12 @@
             </div>
           </div>
         </div>
-        <input type="hidden" name="form_ctrl" value="dr_form">
-        <button id="save_btn" type="submit" class="btn btn-primary pull-right">Save</button>
+        {% comment %} <input type="hidden" name="form_ctrl" value="dr_form"> {% endcomment %}
+        <button id="save_btn" type="submit" name="form_ctrl" value="dr_form" class="btn btn-success pull-right pl-3 pr-3 ">Save</button>
+        <button id="back_btn" type="submit" name="form_ctrl" value="back_btn" class="btn btn-danger pull-right pl-3 pr-3 mr-2">Back</button>
       </form>
         {% if dr_items|length > 0 and dr_form.status.value == "OPEN" %}
-          <button id="print_btn" class="btn btn-rose pull-left">Print</button>
+          <button id="print_btn" class="btn btn-primary pull-left pl-3 pr-3 ">Print</button>
         {% endif %}
         <div class="clearfix"></div>
     </div>
