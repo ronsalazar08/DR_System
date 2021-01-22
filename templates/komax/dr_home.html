@@ -50,6 +50,7 @@
                     <th class="pt-0 pb-0">Costumer</th>
                     <th class="pt-0 pb-0">Line</th>
                     <th class="pt-0 pb-0">Status</th>
+                    <th class="pt-0 pb-0">Approver</th>
                     <th class="p-0"></th>
                   </tr>
                 </thead>
@@ -61,6 +62,7 @@
                     <td>{{dr.customer}}</td>
                     <td>{{dr.line}}</td>
                     <td>{{dr.status}}</td>
+                    <td>{{dr.approver}}</td>
                     <td class="td-actions pt-0 pb-0 pl-0 text-right">
                       {% url 'komax_edit_dr' cnum=dr.control_no as edit_url %} 
                       <a class="btn btn-warning text-light" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="Edit">
@@ -184,6 +186,16 @@
                       <div class="form-group input-group-prepend">
                         <label class="bmd-label-floating ">Line</label>
                         {% render_field form.line class="form-control h5 font-weight-bold" %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="form-group input-group-prepend">
+                        <label class="bmd-label-floating mr-2" >Approver</label>
+                        {% render_field form.approver class="form-control h5 font-weight-bold " %}
                       </div>
                     </div>
                   </div>

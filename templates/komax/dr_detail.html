@@ -125,6 +125,18 @@
           <div class="row">
             <div class="col-md-12">
               <div class="form-group input-group-prepend">
+                <label class="bmd-label-floating ">Approver</label>
+                {% if dr_form.status.value == "WAITING" %}
+                  {% render_field dr_form.approver|attr:"disabled:True" class="form-control h5 font-weight-bold" %}
+                {% else %}
+                  {% render_field dr_form.approver class="form-control h5 font-weight-bold" %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group input-group-prepend">
                 <label class="bmd-label-floating ">Status</label>
                 {% if dr_items|length == 0 or dr_form.status.value == "OPEN" %}
                   {% render_field dr_form.status|attr:"disabled:True" class="form-control h5 font-weight-bold" %}
@@ -239,7 +251,7 @@
 <div id="date_div" style="display: none; position: absolute; top:174px !important; left:790px; "></div>
 <div id="customer_div" style="display: none; position: absolute; top:174px !important; left:130px;"></div>
 <div id="prepare_div" style="display: none; position: absolute; top:500px; left:130px;">{{user.first_name|upper}} {{user.last_name|upper}}</div>
-<div id="signature_div" style="display: none; position: absolute; top:500px; left:760px;">{{signed_by}}</div>
+<div id="signature_div" style="display: none; position: absolute; top:500px; left:760px;"></div>
 {% endblock content %}
 
 {% block scriptNotReady %}
@@ -291,6 +303,7 @@
       $('#remarks_div').text("TOTAL: " + total_quantity);
       $('#date_div').text(('0' + (datep.getMonth()+1)).slice(-2) + "-" + ('0' + datep.getDate()).slice(-2) + "-" + datep.getFullYear());
       $('#customer_div').text(cusp);
+      $('#signature_div').text($("#id_approver").val());
       window.print();  
   });
   

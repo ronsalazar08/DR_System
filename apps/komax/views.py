@@ -138,7 +138,7 @@ def edit_dr(request, cnum):
     try:
         if request.method == 'POST':
             form_ctrl = request.POST.get('form_ctrl')
-            print(form_ctrl)
+            # print(form_ctrl)
             if form_ctrl == "dr_form":
                 form = NewDrForm(request.POST, instance=dr_form.objects.get(control_no=cnum))
                 item_form = NewDrItem()
@@ -197,11 +197,6 @@ def edit_dr(request, cnum):
         messages.error(request, f"Error: Please Try Again!")
         return redirect('komax_home')
 
-    signed_by = ""
-    if 'shifta' in request.user.groups.values_list('name', flat=True):
-        signed_by = "JOSIE AUTOS"
-    elif 'shiftb' in request.user.groups.values_list('name', flat=True):
-        signed_by = "GLORIA PASTOR"
     context = {
         'title' : 'KOMAX',
         'cnum'  : cnum,
@@ -209,7 +204,6 @@ def edit_dr(request, cnum):
         'item_form' :   item_form,
         'dr_items' :   dr_item.objects.filter(control_noFK=cnum).order_by('id'),
         'lista' : permitted_apps(request.user),
-        'signed_by' : signed_by
     }
     return render(request, 'komax/dr_detail.html', context)
 

@@ -11,11 +11,15 @@ class dr_form(models.Model):
     status_choice = [ ('OPEN', 'OPEN'), 
                       ('WAITING', 'WAITING'),
                       ('CLOSED', 'CLOSED') ]
+    approver_choice = [ ('JOSIE AUTOS', 'JOSIE AUTOS'),     #change for foiling supervisor
+                        ('GLORIA PASTOR', 'GLORIA PASTOR') ]    #change for foiling supervisor
+
     date_created = models.DateField(default=timezone.now)
     control_no = models.IntegerField(unique=True)
     customer = models.CharField(max_length=50, choices=customer_choice)
     line = models.CharField(max_length=50, default='LINE')
     status = models.CharField(max_length=20, default='OPEN', choices=status_choice)
+    approver = models.CharField(max_length=50, default='', choices=approver_choice)
     
     def __str__(self):
         return str(self.control_no)

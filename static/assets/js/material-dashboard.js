@@ -316,7 +316,8 @@ md = {
         labels: komax_data.lbl,
         series: [
           komax_data.closed,
-          komax_data.open
+          komax_data.open,
+          komax_data.waiting,
         ]
       };
       var optionsWebsiteViewsChart = {
@@ -367,7 +368,8 @@ md = {
         labels: foiling_data.lbl,
         series: [
           foiling_data.closed,
-          foiling_data.open
+          foiling_data.open,
+          foiling_data.waiting,
         ]
       };
       var optionsWebsiteViewsChart = {

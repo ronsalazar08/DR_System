@@ -77,8 +77,9 @@
       <div class="card-body">
         <h4 class="card-title font-weight-bold">KOMAX</h4>
         <p class="card-category">
-          Status of <span class="text-success font-weight-bold">CLOSED</span> and
-          <span class="text-danger font-weight-bold">OPEN/WAITING</span> Control no.
+          Status of <span class="text-success font-weight-bold">CLOSED</span>,
+          <span class="text-warning font-weight-bold">WAITING</span> and 
+          <span class="text-danger font-weight-bold">OPEN</span> Control no.
       </div>
       <div class="card-footer">
         <div class="stats">
@@ -95,8 +96,9 @@
       <div class="card-body">
         <h4 class="card-title font-weight-bold">FOILING</h4>
         <p class="card-category">
-          Status of <span class="text-success font-weight-bold">CLOSED</span> and
-          <span class="text-danger font-weight-bold">OPEN/WAITING</span> Control no.
+          Status of <span class="text-success font-weight-bold">CLOSED</span>,
+          <span class="text-warning font-weight-bold">WAITING</span> and 
+          <span class="text-danger font-weight-bold">OPEN</span> Control no.
       </div>
       <div class="card-footer">
         <div class="stats">
@@ -113,30 +115,36 @@
 {% block script %}
   var komax_lbl =[]
   var komax_open =[]
+  var komax_waiting =[]
   var komax_closed =[]
   {% for key, val in komax_data.items %}
     komax_lbl[{{forloop.counter0}}] = "{{key}}";
     komax_open[{{forloop.counter0}}] = {{val.OPEN}};
+    komax_waiting[{{forloop.counter0}}] = {{val.WAITING}};
     komax_closed[{{forloop.counter0}}] = {{val.CLOSED}};
   {% empty %}
     komax_lbl = ['', '', '', '', '', '',]
     komax_open = [0, 0, 0, 0, 0, 0,]
+    komax_waiting = [0, 0, 0, 0, 0, 0,]
     komax_closed = [0, 0, 0, 0, 0, 0,]
   {% endfor %}
-  var komax_data = {lbl:komax_lbl, open:komax_open, closed:komax_closed}
-  
+  var komax_data = {lbl:komax_lbl, open:komax_open, waiting:komax_waiting, closed:komax_closed}
+  console.log(komax_data.waiting);
   var foiling_lbl =[]
   var foiling_open =[]
+  var foiling_waiting =[]
   var foiling_closed =[]
   {% for key, val in foiling_data.items %}
     foiling_lbl[{{forloop.counter0}}] = "{{key}}";
     foiling_open[{{forloop.counter0}}] = {{val.OPEN}};
+    foiling_waiting[{{forloop.counter0}}] = {{val.WAITING}};
     foiling_closed[{{forloop.counter0}}] = {{val.CLOSED}};
   {% empty %}
     foiling_lbl = ['', '', '', '', '', '',]
     foiling_open = [0, 0, 0, 0, 0, 0,]
+    foiling_waiting = [0, 0, 0, 0, 0, 0,]
     foiling_closed = [0, 0, 0, 0, 0, 0,]
   {% endfor %}
-  var foiling_data = {lbl:foiling_lbl, open:foiling_open, closed:foiling_closed}
+  var foiling_data = {lbl:foiling_lbl, open:foiling_open, waiting:foiling_waiting, closed:foiling_closed}
   md.initDashboardPageCharts(komax_data, foiling_data);
 {% endblock script %}

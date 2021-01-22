@@ -26,7 +26,8 @@ def dashboard(request):
         dr = komax_dr_form.objects.filter(date_created=i)
         i = i.strftime('%b-%d')
         komax_data[i] = {}
-        komax_data[i]["OPEN"] = dr.filter(status='OPEN').count() + dr.filter(status='WAITING').count()
+        komax_data[i]["OPEN"] = dr.filter(status='OPEN').count()
+        komax_data[i]["WAITING"] = dr.filter(status='WAITING').count()
         komax_data[i]["CLOSED"] = dr.filter(status='CLOSED').count()
     
     foiling_date_list = foiling_dr_form.objects.values_list('date_created', flat=True).distinct().order_by('-date_created')[:7]
@@ -35,7 +36,8 @@ def dashboard(request):
         dr = foiling_dr_form.objects.filter(date_created=i)
         i = i.strftime('%b-%d')
         foiling_data[i] = {}
-        foiling_data[i]["OPEN"] = dr.filter(status='OPEN').count() + dr.filter(status='WAITING').count()
+        foiling_data[i]["OPEN"] = dr.filter(status='OPEN').count()
+        foiling_data[i]["WAITING"] = dr.filter(status='WAITING').count()
         foiling_data[i]["CLOSED"] = dr.filter(status='CLOSED').count()
 
 
