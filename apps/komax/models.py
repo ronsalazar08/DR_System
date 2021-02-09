@@ -3,7 +3,8 @@ from django.utils import timezone
 
 
 class dr_form(models.Model):
-    customer_choice = [ ('HONDA','HONDA'),
+    customer_choice = [ ('FORD','FORD'),
+                        ('HONDA','HONDA'),
                         ('IMV','IMV'),
                         ('GM','GM'),
                         ('OUTLANDER','OUTLANDER'),

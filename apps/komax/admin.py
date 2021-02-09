@@ -24,7 +24,7 @@ class Dritems(admin.ModelAdmin):
     
     list_display = ( 'product_no', 'wos_no', 'first_quantity', 'second_quantity', 'third_quantity', 'fourth_quantity', 'fifth_quantity', 'control_noFK')
 
-    search_fields = ['control_noFK__control_no']
+    search_fields = ['control_noFK__control_no', 'product_no']
     raw_id_fields = ['control_noFK',]
 
 admin.site.register(dr_form, Drforms)
