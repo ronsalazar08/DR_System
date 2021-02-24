@@ -3,16 +3,15 @@ from django.utils import timezone
 
 
 class dr_form(models.Model):
-    customer_choice = [ ('HONDA','HONDA'),
-                        ('IMV','IMV'),
+    customer_choice = [ ('CHRYSLER','CHRYSLER'),
                         ('GM','GM'),
-                        ('OUTLANDER','OUTLANDER'),
-                        ('CHRYSLER','CHRYSLER') ]
+                        ('FORD-14401-IP','FORD-14401-IP') ,
+                        ('FORD-14405-FRAME','FORD-14405-FRAME') ]
     status_choice = [ ('OPEN', 'OPEN'), 
                       ('WAITING', 'WAITING'),
                       ('CLOSED', 'CLOSED') ]
-    approver_choice = [ ('JOSIE AUTOS', 'JOSIE AUTOS'),     #change for foiling supervisor
-                        ('GLORIA PASTOR', 'GLORIA PASTOR') ]    #change for foiling supervisor
+    approver_choice = [ ('ELIZABETH GAMIT', 'ELIZABETH GAMIT'),
+                        ('SENNA DEL VALLE', 'SENNA DEL VALLE') ]   
 
     date_created = models.DateField(default=timezone.now)
     control_no = models.IntegerField(unique=True)
@@ -26,7 +25,7 @@ class dr_form(models.Model):
 
 class dr_item(models.Model):
     product_no = models.CharField(max_length=50)
-    wos_no = models.CharField(max_length=50,default='')
+    wos_no = models.CharField(max_length=50, default='')
     first_quantity = models.IntegerField(default='')
     second_quantity = models.IntegerField(default='')
     third_quantity = models.IntegerField(default='')
