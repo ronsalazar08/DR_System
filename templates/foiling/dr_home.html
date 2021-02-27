@@ -31,14 +31,14 @@
         <div class="card pb-0 mb-0">
           <div class="card-header card-header-info">
             <h4 class="card-title w-50">List of DR</h4>
-            <form method="GET">
+            <form id="form_search" method="GET">
               <input id="search" name="search" type="text" placeholder="Search.." class="border-bottom text-light w-25" style="border: 0; background: none; position:absolute; top:15px; right:40px;" value="{{search|default_if_none:""}}" >
-              {% if search != None and search != "" %}
-                <button id="clear_search" type="submit" class="btn btn-white btn-round btn-sm btn-just-icon" style="position:absolute; top:10px; right:5px;">
-                  <i class="material-icons">close</i>
-                </button>
-              {% endif %}
             </form>
+            {% if search != None and search != "" %}
+              <button id="clear_search" type="submit" class="btn btn-white btn-round btn-sm btn-just-icon" style="position:absolute; top:10px; right:5px;">
+                <i class="material-icons">close</i>
+              </button>
+            {% endif %}
           </div>
           <div class="card-body p-2">
             <div class="table-responsive">
@@ -61,31 +61,40 @@
                     <td>{{dr.date_created|date:'m-d-Y'}}</td>
                     <td>{{dr.customer}}</td>
                     <td>{{dr.line}}</td>
-                    <td>{{dr.status}}</td>
+                    <td class="font-weight-bold {% if dr.status == "OPEN" %} text-danger {% elif dr.status == "WAITING" %} text-warning {% else %} text-success {% endif %}">{{dr.status}}</td>
                     <td>{{dr.approver}}</td>
-                    <td class="td-actions pt-0 pb-0 pl-0 text-right">
-                      {% url 'foiling_edit_dr' cnum=dr.control_no as edit_url %} 
-                      <a class="btn btn-warning text-light" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="Edit">
-                          <i class="material-icons">edit</i>
-                      </a>
-                      <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal" data-toggle="tooltip" data-placement="top" title="Rename">
-                          <i class="material-icons">loop</i>
-                      </button>
-                      {% if dr.status == 'OPEN' %}
-                        {% comment %} <a class="btn btn-rose text-light ml-2" href="{% url 'foiling_delete_dr' pk=dr.pk %}" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="material-icons">close</i>
-                        </a> {% endcomment %}
-                        {% url 'foiling_delete_dr' cnum=dr.control_no as delete_url %}
-                        <button class="btn btn-rose ml-2" onclick="delete_dr_confirm('{{delete_url}}_{{page_obj.number}}', '{{dr.control_no}}')" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="material-icons">close</i>
-                        </button>
-                      {% else %}
-                        {% url 'foiling_close_dr' cnum=dr.control_no as closedr_url %}
-                        <a class="btn btn-success ml-2" href="{{closedr_url}}_{{page_obj.number}}" data-toggle="tooltip" data-placement="top" title="Close">
-                            <i class="material-icons">done</i>
+                    {% if dr.status == 'CLOSED' %}
+                      <td class="td-actions pt-0 pb-0 pl-0 text-left">
+                        {% url 'foiling_edit_dr' cnum=dr.control_no as edit_url %} 
+                        <a class="btn btn-info text-light" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="View">
+                            <i class="material-icons">visibility</i>
                         </a>
-                      {% endif %}
-                    </td>
+                      </td>
+                    {% else %}
+                      <td class="td-actions pt-0 pb-0 pl-0 text-right">
+                        {% url 'foiling_edit_dr' cnum=dr.control_no as edit_url %} 
+                        <a class="btn btn-warning text-light" href="{{edit_url}}" data-toggle="tooltip" data-placement="top" title="Edit">
+                            <i class="material-icons">edit</i>
+                        </a>
+                        <button onclick="drFormTransaction('{{dr.control_no}}')" class="btn btn-danger ml-2 " {% if dr.status != 'OPEN' %}disabled{% endif %} data-toggle="modal" data-target="#drformModal" data-toggle="tooltip" data-placement="top" title="Rename">
+                            <i class="material-icons">loop</i>
+                        </button>
+                        {% if dr.status == 'OPEN' %}
+                          {% comment %} <a class="btn btn-rose text-light ml-2" href="{% url 'foiling_delete_dr' pk=dr.pk %}" data-toggle="tooltip" data-placement="top" title="Delete">
+                              <i class="material-icons">close</i>
+                          </a> {% endcomment %}
+                          {% url 'foiling_delete_dr' cnum=dr.control_no as delete_url %}
+                          <button class="btn btn-rose ml-2" onclick="delete_dr_confirm('{{delete_url}}_{{page_obj.number}}', '{{dr.control_no}}')" data-toggle="tooltip" data-placement="top" title="Delete">
+                              <i class="material-icons">close</i>
+                          </button>
+                        {% else %}
+                          {% url 'foiling_close_dr' cnum=dr.control_no as closedr_url %}
+                          <a class="btn btn-success ml-2" href="{{closedr_url}}_{{page_obj.number}}" data-toggle="tooltip" data-placement="top" title="Close">
+                              <i class="material-icons">done</i>
+                          </a>
+                        {% endif %}
+                      </td>
+                    {% endif %}
                   </tr> 
                 {% empty %}
                   <tr>
@@ -104,25 +113,25 @@
               {% if is_paginated %}
                 <ul class="pagination justify-content-end mb-0 pb-0">
                   {% if page_obj.has_previous %}
-                    <li class="border-top border-bottom page-item border-left rounded-left"><a class="page-link" style="color: #00bcd4;" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    <li class="border-top border-bottom page-item border-left rounded-left"><a class="page-link" style="color: #00bcd4;" href="{% if search %}{{ request.get_full_path }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                   {% else %}
                     <li class="border-top border-bottom page-item border-left rounded-left page-link disabled"</li>
                   {% endif %}
                   {% if page_obj.number|add:'-3' > 1 %}
-                    <li class="border-top border-bottom page-item"  ><a class="page-link rounded" style="color: #00bcd4;" href="?page={{ page_obj.number|add:'-3' }}">&hellip;</a></li>
+                    <li class="border-top border-bottom page-item"  ><a class="page-link rounded" style="color: #00bcd4;" href="{% if search %}{{ request.get_full_path }}&{% else %}?{% endif %}page={{ page_obj.number|add:'-3' }}">&hellip;</a></li>
                   {% endif %}
                   {% for i in paginator.page_range %}
                     {% if page_obj.number == i %}
                       <li class="border-top border-bottom page-item page-link rounded text-light" style="background-color: #00bcd4;"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                     {% elif i > page_obj.number|add:'-4' and i < page_obj.number|add:'4' %}
-                      <li class="border-top border-bottom page-item"><a class="page-link rounded" style="color: #00bcd4;" href="?page={{ i }}">{{ i }}</a></li>
+                      <li class="border-top border-bottom page-item"><a class="page-link rounded" style="color: #00bcd4;" href="{% if search %}{{ request.get_full_path }}&{% else %}?{% endif %}page={{ i }}">{{ i }}</a></li>
                     {% endif %}
                   {% endfor %}
                   {% if page_obj.paginator.num_pages > page_obj.number|add:'3' %}
-                    <li class="border-top border-bottom page-item" ><a class="page-link rounded" style="color: #00bcd4;" href="?page={{ page_obj.number|add:'3' }}">&hellip;</a></li>
+                    <li class="border-top border-bottom page-item" ><a class="page-link rounded" style="color: #00bcd4;" href="{% if search %}{{ request.get_full_path }}&{% else %}?{% endif %}page={{ page_obj.number|add:'3' }}">&hellip;</a></li>
                   {% endif %}
                   {% if page_obj.has_next %}
-                    <li class="border-top border-bottom page-item border-right rounded-right"><a class="page-link" style="color: #00bcd4;" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                    <li class="border-top border-bottom page-item border-right rounded-right"><a class="page-link" style="color: #00bcd4;" href="{% if search %}{{ request.get_full_path }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">&raquo;</a></li>
                   {% else %}
                     <li class="border-top border-bottom page-item border-right rounded-right page-link disabled"></li>
                   {% endif %}
@@ -238,6 +247,7 @@
   function drFormTransaction(control_no) {
     if (control_no == "" ) {
       $('#drFormTransactionTitle').text("New");
+      $('#id_line').val('-');
       $('#form_ctrl').val('new_dr');
     } else {
       $('#drFormTransactionTitle').text("Rename");
@@ -257,6 +267,7 @@
 
   $("#clear_search").click(function() {
     $("#search").val("");
+    $("#form_search").submit();
   });
   $('#id_date_created').datepicker({
                 dateFormat: 'yy-mm-dd'

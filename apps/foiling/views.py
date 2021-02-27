@@ -52,13 +52,12 @@ class DrFormListView(ListView):
 
         queryset = self.model.objects.all().exclude(status="CLOSED").order_by('control_no')
         if search:
-            queryset = queryset.filter(control_no__contains=search)
+            queryset = self.model.objects.all().filter(control_no__contains=search)
             if len(queryset) == 0:
-                queryset = self.model.objects.all()
-                messages.success(self.request, f'Cannot find "{search}"')
+                queryset = self.model.objects.all().exclude(status="CLOSED").order_by('control_no')
+                messages.error(self.request, f'Cannot find "{search}"')
             else:
                 messages.success(self.request, f'Displaying "{search}"')
-
         return queryset
 
 
@@ -74,9 +73,8 @@ def new_or_rename_dr(request):
                     messages.success(request, f'Success: DR <strong class=" font-weight-bold">{form.cleaned_data["control_no"]}</strong> successfully Created!')
                     # return redirect('foiling_home') 
                     return redirect(f'/foiling/edit_dr/{form.cleaned_data["control_no"]}')
-
                 else:
-                    messages.error(request, f'Error: DR <strong class=" font-weight-bold">{request.POST.get("control_no")}</strong> already exist!')
+                    messages.error(request, f'Error: DR <strong class=" font-weight-bold">{request.POST.get("control_no")}</strong> Please Try Again!')
 
             elif old_dr_form != "new_dr" and dr_form.objects.get(control_no=old_dr_form).status == "OPEN":
                 old = dr_form.objects.get(control_no=old_dr_form)
@@ -98,7 +96,7 @@ def new_or_rename_dr(request):
                     return redirect(f'/foiling/edit_dr/{form.cleaned_data["control_no"]}')
 
                 else:
-                    messages.error(request, f'Error: DR <strong class=" font-weight-bold">{request.POST.get("control_no")}</strong> already exist!')
+                    messages.error(request, f'Error: DR <strong class=" font-weight-bold">{request.POST.get("control_no")}</strong> Please Try Again!')
             else:
                 messages.error(request, f"Error: Please Try Again!")
     except:
@@ -165,16 +163,16 @@ def edit_dr(request, cnum):
                     item_form.save()
                     messages.success(request, f' Item <strong class=" font-weight-bold">{item_form.cleaned_data["product_no"]} {item_form.cleaned_data["wos_no"]}</strong> Added!')
                     return redirect(f'/foiling/edit_dr/{cnum}')
-            elif form_ctrl == "back_btn":
-                pk = dr_form.objects.get(control_no=cnum).pk
-                blist = dr_form.objects.all().values_list('pk', flat=True).order_by('control_no').exclude(status='CLOSED')
-                position = list(blist).index(pk)
-                if position == 0:
-                    page = 1
-                else:
-                    page = math.floor(position/9)+1
-                # messages.warning(request, f' Nothings Changed on DR <strong class=" font-weight-bold">{cnum}</strong>!')
-                return redirect(f'http://{request.get_host()}/foiling/?page={page}')
+            # elif form_ctrl == "back_btn":
+            #     pk = dr_form.objects.get(control_no=cnum).pk
+            #     blist = dr_form.objects.all().values_list('pk', flat=True).order_by('control_no').exclude(status='CLOSED')
+            #     position = list(blist).index(pk)
+            #     if position == 0:
+            #         page = 1
+            #     else:
+            #         page = math.floor(position/9)+1
+            #     # messages.warning(request, f' Nothings Changed on DR <strong class=" font-weight-bold">{cnum}</strong>!')
+            #     return redirect(f'http://{request.get_host()}/foiling/?page={page}')
 
             elif form_ctrl:
                 pk = form_ctrl

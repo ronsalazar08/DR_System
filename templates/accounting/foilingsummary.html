@@ -62,17 +62,17 @@
             <td>{{item.customer|slice:":4"}}</td>
             {% if customerS == "GM" %}<td>{{item.product_no|slice:":5"}}</td>{% else %}<td>{{item.product_no|slice:":7"}}</td>{% endif %}
             <td>{{item.product_no|slice:"-6:-4"}}</td>
-            <td>{{item.product_no|slice:"-3:"}}</td>
+            <td>'{{item.product_no|slice:"-3:"}}</td>
             <td>'{{item.wos_no}}</td>
             <td class="qty">{{item.quantity}}</td>
             <td class="subtot"></td>
             <td>3.7</td>
             <td></td>
             <td></td>
-            <td>=J{{ forloop.counter|add:5 }}*L{{ forloop.counter|add:5 }}</td>
-            <td>=H{{ forloop.counter|add:5 }}*M{{ forloop.counter|add:5 }}</td>
-            <td>=N{{ forloop.counter|add:5 }}</td>
-            <td>=H{{ forloop.counter|add:5 }}*L{{ forloop.counter|add:5 }}</td>
+            <td style="color: transparent;">=J{{ forloop.counter|add:5 }}*L{{ forloop.counter|add:5 }}</td>
+            <td style="color: transparent;">=H{{ forloop.counter|add:5 }}*M{{ forloop.counter|add:5 }}</td>
+            <td style="color: transparent;">=N{{ forloop.counter|add:5 }}</td>
+            <td style="color: transparent;">=H{{ forloop.counter|add:5 }}*L{{ forloop.counter|add:5 }}</td>
         </tr>
         {% comment %} {% endif %} {% endcomment %}
             {% if forloop.last %}
@@ -84,20 +84,20 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>=SUM(H6:H{{ forloop.counter|add:5 }})</td>
-            <td>=SUM(I6:I{{ forloop.counter|add:5 }})</td>
+            <td style="color: transparent;">=SUM(H6:H{{ forloop.counter|add:5 }})</td>
+            <td style="color: transparent;">=SUM(I6:I{{ forloop.counter|add:5 }})</td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td>=SUM(N6:N{{ forloop.counter|add:5 }})</td>
-            <td>=SUM(O6:O{{ forloop.counter|add:5 }})</td>
-            <td>=SUM(P6:P{{ forloop.counter|add:5 }})</td>
+            <td style="color: transparent;">=SUM(N6:N{{ forloop.counter|add:5 }})</td>
+            <td style="color: transparent;">=SUM(O6:O{{ forloop.counter|add:5 }})</td>
+            <td style="color: transparent;">=SUM(P6:P{{ forloop.counter|add:5 }})</td>
             </tr>
             {% endif %}
     {% empty %}
     <tr>
-        <td colspan=8 class="text-center" style="font-size: 32px; font-weight: normal; width:997px;">
+        <td colspan=16 class="text-center" style="font-size: 32px; font-weight: normal; width:997px;">
                 <div>NO DATA TO DISPLAY</h1>
         </td>
     </tr>
@@ -188,46 +188,46 @@ function fnExcelReport() {
             $('#tablesum tbody tr').each(function(){
               var customer = $(this).find(':nth-child(3)').text();
               var control_no = $(this).find(':nth-child(6)').text();
-              
+              //man-hr
               {% if customerS == "GM" %}
-                const man_hr = {"011": 0.0131,
-                                "016": 0.0131,
-                                "018": 0.0385,
-                                "055": 0.0396,
-                                "056": 0.0131,
-                                "057": 0.0400};
+                const man_hr = {"'011": 0.0131,
+                                "'016": 0.0131,
+                                "'018": 0.0385,
+                                "'055": 0.0396,
+                                "'056": 0.0131,
+                                "'057": 0.0400};
               {% elif customerS == "FORD-14401-IP" %}
-                const man_hr = {"013" : 0.0424,
-                                "014" : 0.0353,
-                                "015" : 0.0368,
-                                "016" : 0.0421,
-                                "017" : 0.0775,
-                                "018" : 0.0810};
+                const man_hr = {"'013" : 0.0424,
+                                "'014" : 0.0353,
+                                "'015" : 0.0368,
+                                "'016" : 0.0421,
+                                "'017" : 0.0775,
+                                "'018" : 0.0810};
               {% elif customerS == "FORD-14405-FRAME" %}
-                const man_hr = {"007" : 0.0824,
-                                "008" : 0.0824,
-                                "009" : 0.0321,
-                                "015" : 0.0385,
-                                "016" : 0.0392,
-                                "018" : 0.0404,
-                                "019" : 0.0403,
-                                "020" : 0.0787,
-                                "021" : 0.0871,
-                                "022" : 0.0767,
-                                "023" : 0.0815,
-                                "024" : 0.0860,
-                                "025" : 0.0872,
-                                "026" : 0.0792,
-                                "027" : 0.0826,
-                                "028" : 0.0758,
-                                "029" : 0.0835,
-                                "030" : 0.0860,
-                                "031" : 0.0802,
-                                "032" : 0.0761,
-                                "033" : 0.0733,
-                                "034" : 0.0814,
-                                "035" : 0.0728,
-                                "036" : 0.0812};
+                const man_hr = {"'007" : 0.0824,
+                                "'008" : 0.0824,
+                                "'009" : 0.0321,
+                                "'015" : 0.0385,
+                                "'016" : 0.0392,
+                                "'018" : 0.0404,
+                                "'019" : 0.0403,
+                                "'020" : 0.0787,
+                                "'021" : 0.0871,
+                                "'022" : 0.0767,
+                                "'023" : 0.0815,
+                                "'024" : 0.0860,
+                                "'025" : 0.0872,
+                                "'026" : 0.0792,
+                                "'027" : 0.0826,
+                                "'028" : 0.0758,
+                                "'029" : 0.0835,
+                                "'030" : 0.0860,
+                                "'031" : 0.0802,
+                                "'032" : 0.0761,
+                                "'033" : 0.0733,
+                                "'034" : 0.0814,
+                                "'035" : 0.0728,
+                                "'036" : 0.0812};
               {% endif %}
               if (control_no in man_hr) {
                 $(this).find(':nth-child(12)').html(man_hr[control_no]);
